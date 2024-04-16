@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>wonsz</title>
+    <link
+      rel="icon"
+      href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQskh-T2u-3SfnhWRQB5GdCywHsvhwSjpJooDuSjvtcOQ&s"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        background-color: black;
+      }
+
+      .box {
+        width: 10%;
+        height: 10%;
+        box-shadow: inset 0px 0px 0px 1px rgba(4, 80, 4, 0.776);
+      }
+
+      @media (max-width: 600px) {
+        #container {
+          width: 100%;
+        }
+      }
+
+      @media (min-width: 600px) {
+        #container {
+          height: 100%;
+        }
+      }
+
+      #container {
+        aspect-ratio: 1/1;
+        position: absolute;
+        display: flex;
+        flex-wrap: wrap;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="container"></div>
+
+    <script>
+      var id,
+        create,
+        direction = "Right",
+        seconds = 0,
+        howFast = 0.5,
+        x,
+        y,
+        arr = ["x3y3", "x2y3"],
+        points = 1;
+
+      for (y = 0; y < 10; y++) {
+        for (x = 0; x < 10; x++) {
+          id = "x" + x.toString() + "y" + y.toString();
+          create = document.createElement("div");
+          create.setAttribute("id", id);
+          create.setAttribute("class", "box");
+          create.style.backgroundColor = "black";
+          document.getElementById("container").appendChild(create);
+        }
+      }
+      x = 3;
+      y = 3;
+
+      window.addEventListener(
+        "keydown",
+        function (event) {
+          if (event.defaultPrevented) {
+            return;
+          }
+
+          switch (event.key) {
+            case "ArrowDown":
+              if (direction != "Up" && points >= 0) {
+                direction = "Down";
+                y += 1;
+                seconds = 0;
+                snake();
+              }
+              break;
+
+            case "ArrowUp":
+              if (direction != "Down" && points >= 0) {
+                direction = "Up";
+                y -= 1;
+                seconds = 0;
+                snake();
+              }
+              break;
+
+            case "ArrowLeft":
+              if (direction != "Right" && points >= 0) {
+                direction = "Left";
+                x -= 1;
+                seconds = 0;
+                snake();
+              }
+              break;
+
+            case "ArrowRight":
+              if (direction != "Left" && points >= 0) {
+                direction = "Right";
+                x += 1;
+                seconds = 0;
+                snake();
+              }
+              break;
+
+            default:
+              return;
+          }
+          event.preventDefault();
+        },
+        true
+      );
+
+      setInterval(function () {
+        if (seconds == howFast) {
+          seconds = 0;
+          switch (direction) {
+            case "Down":
+              y += 1;
+              break;
+
+            case "Up":
+              y -= 1;
+              break;
+
+            case "Left":
+              x -= 1;
+              break;
+
+            case "Right":
+              x += 1;
+              break;
+          }
+          snake();
+        }
+        seconds = Math.round((seconds + 0.1) * 10) / 10;
+      }, 100);
+
+      generatePunkt();
+      function snake() {
+        if (x > 9 || x < 0 || y > 9 || y < 0) {
+          location.reload();
+          alert("rozjebałeś się");
+        }
+
+        for (let i = 0; i <= points; i++) {
+          document.getElementById(arr[i]).style.backgroundColor = "black";
+        }
+
+        for (let i = 0, n = points + 1; i <= n; n--) {
+          arr[n] = arr[n - 1];
+        }
+        arr[0] = "x" + x.toString() + "y" + y.toString();
+
+        document.getElementById(arr[0]).style.backgroundColor = "blue";
+        for (let i = 1; i <= points; i++) {
+          document.getElementById(arr[i]).style.backgroundColor = "green";
+        }
+
+        if (arr[0] == id) {
+          points += 1;
+          generatePunkt();
+        }
+
+        setTimeout(function () {
+          for (let i = 4; i <= points; i++) {
+            if (arr[0] == arr[i]) {
+              alert("rozjebałeś się");
+              location.reload();
+            }
+          }
+        }, 100);
+      }
+
+      function generatePunkt() {
+        id =
+          "x" +
+          Math.floor(Math.random() * 10).toString() +
+          "y" +
+          Math.floor(Math.random() * 10).toString();
+        for (let i = 0; i < arr.length; i++) {
+          if (id == arr[i]) {
+            generatePunkt();
+          }
+        }
+        console.log(id);
+        document.getElementById(id).style.backgroundColor = "brown";
+        console.log(id);
+      }
+    </script>
+  </body>
+</html>
